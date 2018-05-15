@@ -15,16 +15,6 @@ and Quasi-Newton methods.
 
 Using: make, C++11
 
-Notes:
-Including typedefs
-Initially using malloc, and free
-Checking leak with valgrind
-Moved to C++ (new/delete)
-Introduced classes for Vector and Matrix
-Introduced inner_product and multiplication methods
-Introduced std::vector instead of arrays 
-Removed destructors after introducing vectors
-
 ** TODO Reading sources
 *** TODO Read C++ tips by Herbert Simon
 *** TODO Look into Numerical Recipes
@@ -34,13 +24,29 @@ Removed destructors after introducing vectors
 
 ** IN-PROGRESS Implement linear algebra library
 *** DONE Implement vector and matrix types
+Including typedefs for the vector matrix types
 *** DONE Allocate/deallocate vectors and matrices
+Initially using malloc and free
+Checking leak with valgrind was very useful.
+Moved then to C++ with new/delete
 *** DONE Introduce class structure for vectors and matrices
+Classes contain raw vector/matrix types
+These are std::vectors instead of arrays
+Removed destructors after introducing vectors
 *** DONE Introduce matrix-vector multiplication
-*** TODO Compare speed with Eigen and Armadillo matrices
+To do that while not violating encapsulation I introduced
+inner_product method in Vector class. Let's see if it is
+fast enough!
+*** DONE Compare speed with Eigen and Armadillo matrices
+Comparing 1000x1000 matrix multiplication with 1000x1 vector
+Eigen seems to be the fastest on my laptop.
+My implementation is of course slower but not too bad!
+
+Asserting condition that it should not be slower than
+3 times the time it takes for ARMA/EIGEN!
 *** TODO Compare accuracy with Eigen and Armadillo
 *** TODO Look into Numerical Recipes for efficiency
-
+*** WAITING Add underlying support for ARMA/EIGEN etc. matrices
 ** TODO Test gradient descent for an arbitrary function
 ** TODO Add line search
 ** TODO Compute Hessian matrix
