@@ -1,0 +1,53 @@
+;; This buffer is for notes you don't want to save, and for Lisp evaluation.
+;; If you want to create a file, visit that file with C-x C-f,
+;; then enter the text in that file's own buffer.
+
+#-*- mode: org -*-
+#+STARTUP: showall
+#+TODO: WAITING TODO IN-PROGRESS DONE
+#+TAGS: { @journal(j) @conference(c) @idea(i) @general(g) }
+
+* Testing unconstrained optimization in C++
+"What I cannot create, I do not understand." - Feynman
+
+The goal is to test my own implementations of gradient descent
+and Quasi-Newton methods.
+
+Using: make, C++11
+
+Notes:
+Including typedefs
+Initially using malloc, and free
+Checking leak with valgrind
+Moved to C++ (new/delete)
+Introduced classes for Vector and Matrix
+Introduced inner_product and multiplication methods
+Introduced std::vector instead of arrays 
+Removed destructors after introducing vectors
+
+** TODO Reading sources
+*** TODO Read C++ tips by Herbert Simon
+*** TODO Look into Numerical Recipes
+*** TODO Read proof of Gradient Descent convergence with Line Search
+*** TODO Read Newton's Method convergence proof
+*** TODO Read QN convergence proof
+
+** IN-PROGRESS Implement linear algebra library
+*** DONE Implement vector and matrix types
+*** DONE Allocate/deallocate vectors and matrices
+*** DONE Introduce class structure for vectors and matrices
+*** DONE Introduce matrix-vector multiplication
+*** TODO Compare speed with Eigen and Armadillo matrices
+*** TODO Compare accuracy with Eigen and Armadillo
+*** TODO Look into Numerical Recipes for efficiency
+
+** TODO Test gradient descent for an arbitrary function
+** TODO Add line search
+** TODO Compute Hessian matrix
+** TODO Add matrix inversion
+** TODO Compare speed of matrix multiplication/inversion Eigen/Arma
+** TODO Test Newton's method with line search
+** TODO Add trust region method (Nocedal et al.)
+** TODO Add Quasi-Newton method (BFGS)
+** TODO Extend vector & matrix computations with BLAS/LAPACK
+** TODO Compare with NLOPT routines for speed
