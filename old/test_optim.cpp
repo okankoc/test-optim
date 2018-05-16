@@ -6,7 +6,8 @@
  */
 
 #include <iostream>
-#include "optim.h"
+
+#include "../matrix.h"
 //#include "stdlib.h"
 
 typedef double* vec;

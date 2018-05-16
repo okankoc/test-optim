@@ -6,14 +6,16 @@
  */
 
 #include <iostream>
-#include "optim.h"
 #include <armadillo>
 #include <Eigen/Dense>
-//#include "stdlib.h"
+
+#include "matrix.h"
+#include "optim.h"
 
 void require(const bool cond, const std::string & message);
 void compare_speed_mat_vec_mult();
 void check_accuracy_mat_vec_mult();
+void test_grad_descent();
 
 int main() {
 
@@ -21,8 +23,37 @@ int main() {
 
     compare_speed_mat_vec_mult();
     check_accuracy_mat_vec_mult();
+    test_grad_descent();
 
     return 0;
+}
+
+double cost_fnc(const unconstr_optim::Vector & x) {
+    return x*x; // inner product
+}
+
+unconstr_optim::Vector grad_fnc(const unconstr_optim::Vector & x) {
+    return x*2; //x-derivative
+}
+
+void test_grad_descent() {
+    using namespace unconstr_optim;
+    using std::cout;
+
+    cout << "Testing gradient descent...\n";
+    f_optim f = cost_fnc;
+    df_optim df = grad_fnc;
+    const double ftol = 1e-10;
+    const double xtol = 1e-10;
+    Vector x(10);
+    x.randn();
+    x.print("Initial value x0");
+    arma::wall_clock timer;
+    timer.tic();
+    grad_descent(f,df,ftol,xtol,x);
+    cout << "Optim took " << timer.toc() * 1000 << " ms.\n";
+    x.print("Final value xf");
+
 }
 
 void require(const bool cond, const std::string & message) {
@@ -37,8 +68,8 @@ void check_accuracy_mat_vec_mult() {
     using namespace unconstr_optim;
     cout << "\nChecking accuracy of multiplication...\n";
     cout << "Multiplying OWN matrix and vector...\n";
-    int m = 4;
-    int n = 4;
+    int m = 100;
+    int n = 100;
     Vector in = Vector(n);
     Matrix M = Matrix(m,n);
 
@@ -74,7 +105,7 @@ void check_accuracy_mat_vec_mult() {
     cout << out_arma;
     out.print("out");*/
 
-    require(out.compare(out_arma_vec),"MATRICES ARE NOT EQUAL!");
+    require(out.compare(out_arma_vec,1e-4),"MATRICES ARE NOT EQUAL!");
 
 }
 

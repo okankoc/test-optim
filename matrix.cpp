@@ -5,9 +5,10 @@
  *      Author: okoc
  */
 
+#include "matrix.h"
+
 #include <iostream>
 #include <random>
-#include "optim.h"
 
 namespace unconstr_optim {
 
@@ -37,9 +38,76 @@ void Vector::assign(const int idx, const double & val) {
     vec[idx] = val;
 }
 
-bool Vector::compare(const raw_vector & vec_) const {
+double Vector::operator*(const Vector & vec_two) const {
+    return inner_prod(vec_two);
+}
 
-    return (vec_ == this->vec);
+Vector Vector::operator*(const double & val) const {
+    Vector out(*this);
+    for (int i = 0; i < m; i++)
+        out.vec[i] *= val;
+    return out;
+}
+
+Vector Vector::operator+(const double & val) const {
+    Vector out(*this);
+    for (int i = 0; i < m; i++)
+        out.vec[i] += val;
+    return out;
+}
+
+Vector Vector::operator-(const Vector & vec_two) const {
+    Vector out(*this);
+    for (int i = 0; i < m; i++)
+        out.vec[i] -= vec_two.vec[i];
+    return out;
+}
+
+Vector Vector::operator-(const double & val) const {
+    Vector out(*this);
+    for (int i = 0; i < m; i++)
+        out.vec[i] -= val;
+    return out;
+}
+
+Vector & Vector::operator+=(const double & val) {
+    for (int i = 0; i < m; i++)
+        vec[i] += val;
+    return *this;
+}
+
+Vector & Vector::operator-=(const double & val) {
+    for (int i = 0; i < m; i++)
+        vec[i] -= val;
+    return *this;
+}
+
+Vector & Vector::operator+=(const Vector & vec_two) {
+    for (int i = 0; i < m; i++)
+        vec[i] += vec_two.vec[i];
+    return *this;
+}
+
+Vector & Vector::operator-=(const Vector & vec_two) {
+    for (int i = 0; i < m; i++)
+        vec[i] -= vec_two.vec[i];
+    return *this;
+}
+
+Vector & Vector::operator*=(const double & val) {
+    for (int i = 0; i < m; i++)
+        vec[i] *= val;
+    return *this;
+}
+
+bool Vector::compare(const raw_vector & vec_, const double & max_diff) const {
+
+    for (int i = 0; i < m; i++) {
+        if (fabs(vec[i] - vec_[i]) > max_diff)
+            return false;
+    }
+    return true;
+    //return (vec_ == this->vec);
 }
 
 void Vector::print() const {
@@ -139,6 +207,10 @@ void Matrix::mult_vec(const Vector & in, Vector & out) const {
     for (int i = 0; i < m; i++) {
         out.assign(i,in.inner_prod(mat[i]));
     }
+}
+
+double norm(const Vector & vec) {
+    return sqrt(vec*vec);
 }
 
 }

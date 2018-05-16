@@ -1,64 +1,28 @@
 /*
  * optim.h
  *
- *  Created on: May 14, 2018
+ *  Created on: May 15, 2018
  *      Author: okoc
  */
 
 #ifndef EX_OPTIM_H_
 #define EX_OPTIM_H_
 
-#include <vector>
-#include <random>
-
-typedef std::vector<double> raw_vector;
-typedef std::vector<std::vector<double> > raw_matrix;
+#include "matrix.h"
 
 namespace unconstr_optim {
 
-const double MAX_RANDU = 1.0; //!< uniform random number generation limit
-const double VAR_RANDN = 1.0; //!< gaussian r.v. variance
+const double LEARN_RATE = 0.1;
 
-class Vector {
+typedef double (*f_optim)(const Vector & x);
+typedef Vector (*df_optim)(const Vector & x);
 
-private:
-    int m;
-    raw_vector vec;
-    std::default_random_engine engine = std::default_random_engine();
-
-public:
-    Vector(int m);
-    Vector(std::vector<double> & vals);
-    void assign(const int idx, const double & val);
-    void print() const;
-    void print(const std::string & message = "") const;
-    void set_seed(const int seed);
-    void randu();
-    void randn();
-    bool compare(const raw_vector & vec) const;
-    double inner_prod(const Vector & v) const;
-    double inner_prod(const raw_vector & vec_two) const;
-};
-
-class Matrix {
-
-private:
-    int m;
-    int n;
-    raw_matrix mat;
-    std::default_random_engine engine = std::default_random_engine();
-    void mult_vec(const Vector & in, Vector & out) const;
-
-public:
-    Matrix(int m, int n);
-    void print() const;
-    void print(const std::string & message) const;
-    void set_seed(const int seed);
-    void randu();
-    void randn();
-    Vector operator*(const Vector & in) const;
-};
-
+void grad_descent(const f_optim & f,
+                  const df_optim & df,
+                  const double & ftol,
+                  const double & xtol,
+                  Vector & x);
 }
 
-#endif /* EX_OPTIM_H_ */
+
+#endif /* EX_OPTIM_OPTIM_H_ */

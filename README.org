@@ -17,12 +17,12 @@ Using: make, C++11
 
 ** TODO Reading sources
 *** TODO Read C++ tips by Herbert Simon
-*** TODO Look into Numerical Recipes
+*** TODO Look into Numerical Recipes for efficiency
 *** TODO Read proof of Gradient Descent convergence with Line Search
 *** TODO Read Newton's Method convergence proof
 *** TODO Read QN convergence proof
 
-** IN-PROGRESS Implement linear algebra library
+** DONE Implement linear algebra library
 *** DONE Implement vector and matrix types
 Including typedefs for the vector matrix types
 *** DONE Allocate/deallocate vectors and matrices
@@ -44,16 +44,27 @@ My implementation is of course slower but not too bad!
 
 Asserting condition that it should not be slower than
 3 times the time it takes for ARMA/EIGEN!
-*** TODO Compare accuracy with Eigen and Armadillo
-*** TODO Look into Numerical Recipes for efficiency
-*** WAITING Add underlying support for ARMA/EIGEN etc. matrices
-** TODO Test gradient descent for an arbitrary function
-** TODO Add line search
-** TODO Compute Hessian matrix
-** TODO Add matrix inversion
-** TODO Compare speed of matrix multiplication/inversion Eigen/Arma
+*** DONE Compare accuracy with Eigen and Armadillo
+Comparing the accuracy in a unit test that I created.
+Requiring that the entries of the output vector be equal
+to the ARMADILLO result. Seeding both ARMA and OWN 
+matrices and vectors with C++11 random number generator
+and seed.
+
+** IN-PROGRESS Test gradient descent for an arbitrary function
+*** DONE Use a learning rate
+Added a learning rate, xtol and ftol termination
+criteria. I had to also introduce -=, +=, *, and norm
+operations on vectors.
+*** TODO Add line search
 ** TODO Test Newton's method with line search
+*** TODO Compute Hessian matrix
+*** TODO Add matrix inversion
+**** TODO Compare speed of matrix inversion Eigen/Arma
+**** TODO Test accuracy of matrix inversion
 ** TODO Add trust region method (Nocedal et al.)
 ** TODO Add Quasi-Newton method (BFGS)
-** TODO Extend vector & matrix computations with BLAS/LAPACK
-** TODO Compare with NLOPT routines for speed
+** TODO Check other libraries
+*** TODO Extend vector & matrix computations with BLAS/LAPACK
+*** TODO Compare with Eigen unsupported module (MINPACK in C++)
+*** TODO Compare with NLOPT routines for speed
