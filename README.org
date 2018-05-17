@@ -56,6 +56,19 @@ and seed.
 Added a learning rate, xtol and ftol termination
 criteria. I had to also introduce -=, +=, *, and norm
 operations on vectors.
+*** DONE Add a common interface to grad descent
+Added templated gradient descent function that can work
+will ARMADILLO and EIGEN libraries. 
+
+I had to wrap x.norm of Eigen to norm(x) for compatibility. 
+In the end there are three specializations which have to be
+explicitly spelled out in the source file for the compiler.
+
+**** DONE Add unit tests comparing the results with three libs
+Added a unit test for optimizing f(x) = x'*x in ten dimensions.
+I had to again introduce three different specializations
+for the cost function and its gradient.
+
 *** TODO Add line search
 ** TODO Test Newton's method with line search
 *** TODO Compute Hessian matrix

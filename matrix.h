@@ -26,18 +26,19 @@ private:
     raw_vector vec;
     std::default_random_engine engine = std::default_random_engine();
     double inner_prod(const Vector & v) const;
+    void print() const;
 
 public:
     Vector(int m);
     Vector(std::vector<double> & vals);
-    void assign(const int idx, const double & val);
-    void print() const;
     void print(const std::string & message = "") const;
     void set_seed(const int seed);
     void randu();
     void randn();
     bool compare(const raw_vector & vec_, const double & max_diff) const;
     double inner_prod(const raw_vector & vec_two) const;
+    double operator[](const int idx) const;
+    double& operator[](const int idx);
     double operator*(const Vector & vec_two) const;
     Vector operator*(const double & val) const;
     Vector operator-(const Vector & vec_two) const;

@@ -7,32 +7,55 @@
 
 #include "matrix.h"
 #include "optim.h"
+#include <armadillo>
+#include <Eigen/Dense>
 
 namespace unconstr_optim {
 
-typedef double (*f_optim)(const Vector & x);
-typedef Vector (*df_optim)(const Vector & x);
+// needed methods for interface unification
+static double norm(const Eigen::VectorXd & x) {
+    return x.norm();
+}
 
-void grad_descent(const f_optim & f,
-                  const df_optim & df,
+template<typename T>
+void grad_descent(const f_optim<T> & f,
+                  const df_optim<T> & df,
                   const double & ftol,
                   const double & xtol,
-                  Vector & x) {
+                  const double & learn_rate,
+                  T & x) {
 
     // fix a learning rate
     // use that learning rate to descend
     // if function or x value changes less than tol quit!
 
-    Vector x_pre = x;
+    T x_pre = x;
     double f_diff = 100;
     double x_diff = 100;
     while (f_diff > ftol || x_diff > xtol) {
-        x -= df(x) * LEARN_RATE;
+        x -= df(x) * learn_rate;
         f_diff = fabs(f(x) - f(x_pre));
         x_diff = norm(x - x_pre);
         x_pre = x;
     }
 }
 
-}
+// add more libraries if you like!
 
+template void grad_descent<Vector>(const f_optim<Vector> & f,
+                                   const df_optim<Vector> & df,
+                                   const double & ftol,
+                                   const double & xtol,
+                                   Vector & x);
+template void grad_descent<arma::vec>(const f_optim<arma::vec> & f,
+                                   const df_optim<arma::vec> & df,
+                                   const double & ftol,
+                                   const double & xtol,
+                                   arma::vec & x);
+template void grad_descent<Eigen::VectorXd>(const f_optim<Eigen::VectorXd> & f,
+                                   const df_optim<Eigen::VectorXd> & df,
+                                   const double & ftol,
+                                   const double & xtol,
+                                   Eigen::VectorXd & x);
+
+}

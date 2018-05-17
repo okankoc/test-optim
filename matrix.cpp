@@ -34,12 +34,16 @@ void Vector::randn() {
     }
 }
 
-void Vector::assign(const int idx, const double & val) {
-    vec[idx] = val;
-}
-
 double Vector::operator*(const Vector & vec_two) const {
     return inner_prod(vec_two);
+}
+
+double Vector::operator[](const int idx) const {
+    return vec[idx];
+}
+
+double& Vector::operator[](const int idx) {
+    return vec[idx];
 }
 
 Vector Vector::operator*(const double & val) const {
@@ -113,7 +117,7 @@ bool Vector::compare(const raw_vector & vec_, const double & max_diff) const {
 void Vector::print() const {
 
     using namespace std;
-    cout << "vec = [";
+    cout << "[";
     for (int i = 0; i < m-1; i++) {
         cout << vec[i] << " ";
     }
@@ -205,7 +209,7 @@ Vector Matrix::operator*(const Vector & in) const {
 void Matrix::mult_vec(const Vector & in, Vector & out) const {
 
     for (int i = 0; i < m; i++) {
-        out.assign(i,in.inner_prod(mat[i]));
+        out[i] = in.inner_prod(mat[i]);
     }
 }
 

@@ -9,20 +9,24 @@
 #define EX_OPTIM_H_
 
 #include "matrix.h"
+#include <armadillo>
 
 namespace unconstr_optim {
 
-const double LEARN_RATE = 0.1;
+// alias declarations
+template<typename T>
+using f_optim = double (*)(const T & x);
 
-typedef double (*f_optim)(const Vector & x);
-typedef Vector (*df_optim)(const Vector & x);
+template<typename T>
+using df_optim = T (*)(const T & x);
 
-void grad_descent(const f_optim & f,
-                  const df_optim & df,
+template<typename T>
+void grad_descent(const f_optim<T> & f,
+                  const df_optim<T> & df,
                   const double & ftol,
                   const double & xtol,
-                  Vector & x);
+                  const double & learn_rate,
+                  T & x);
 }
-
 
 #endif /* EX_OPTIM_OPTIM_H_ */

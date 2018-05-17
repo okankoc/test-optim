@@ -12,6 +12,8 @@
 #include "matrix.h"
 #include "optim.h"
 
+namespace opt = unconstr_optim;
+
 void require(const bool cond, const std::string & message);
 void compare_speed_mat_vec_mult();
 void check_accuracy_mat_vec_mult();
@@ -28,31 +30,94 @@ int main() {
     return 0;
 }
 
-double cost_fnc(const unconstr_optim::Vector & x) {
+// cost and grad function templates
+template<typename T>
+double cost_fnc(const T & x);
+
+template<typename T>
+T grad_fnc(const T & x);
+
+// specializations for cost and grad functions
+template<> double cost_fnc<opt::Vector>(const opt::Vector & x) {
     return x*x; // inner product
 }
 
-unconstr_optim::Vector grad_fnc(const unconstr_optim::Vector & x) {
+template<> double cost_fnc<arma::vec>(const arma::vec & x) {
+    return dot(x,x);
+}
+
+template<> double cost_fnc<Eigen::VectorXd>(const Eigen::VectorXd & x) {
+    return x.dot(x);
+}
+
+template<> opt::Vector grad_fnc<opt::Vector>(const opt::Vector & x) {
+    return x*2; //x-derivative
+}
+
+template<> arma::vec grad_fnc<arma::vec>(const arma::vec & x) {
+    return x*2; //x-derivative
+}
+
+template<> Eigen::VectorXd grad_fnc<Eigen::VectorXd>(const Eigen::VectorXd & x) {
     return x*2; //x-derivative
 }
 
 void test_grad_descent() {
-    using namespace unconstr_optim;
+    using namespace opt;
     using std::cout;
+    const int DIM = 10;
 
-    cout << "Testing gradient descent...\n";
-    f_optim f = cost_fnc;
-    df_optim df = grad_fnc;
+    cout << "\nTesting gradient descent...\n";
+    f_optim<Vector> f = cost_fnc<Vector>;
+    df_optim<Vector> df = grad_fnc<Vector>;
     const double ftol = 1e-10;
     const double xtol = 1e-10;
-    Vector x(10);
+    const double learn_rate = 0.1;
+    Vector x(DIM);
     x.randn();
     x.print("Initial value x0");
     arma::wall_clock timer;
     timer.tic();
-    grad_descent(f,df,ftol,xtol,x);
+    Vector x_init = x;
+    grad_descent<Vector>(f,df,ftol,xtol,learn_rate,x);
     cout << "Optim took " << timer.toc() * 1000 << " ms.\n";
     x.print("Final value xf");
+
+    cout << "Testing gradient descent with ARMADILLO...\n";
+    f_optim<arma::vec> f_arma = cost_fnc<arma::vec>;
+    df_optim<arma::vec> df_arma = grad_fnc<arma::vec>;
+    arma::vec x_arma = arma::zeros<arma::vec>(DIM);
+    //x_arma.randn();
+    for (int i = 0; i < DIM; i++)
+        x_arma(i) = x_init[i];
+
+    //x_arma.t().print("Initial value x0");
+    timer.tic();
+    grad_descent<arma::vec>(f_arma,df_arma,ftol,xtol,learn_rate,x_arma);
+    cout << "Optim took " << timer.toc() * 1000 << " ms.\n";
+    x_arma.t().print("Final value xf");
+
+    cout << "Testing gradient descent with EIGEN...\n";
+    f_optim<Eigen::VectorXd> f_eigen = cost_fnc<Eigen::VectorXd>;
+    df_optim<Eigen::VectorXd> df_eigen = grad_fnc<Eigen::VectorXd>;
+    Eigen::VectorXd x_eigen = Eigen::VectorXd::Zero(DIM);
+    //x_eigen.setRandom();
+    for (int i = 0; i < DIM; i++)
+        x_eigen(i) = x_init[i];
+    //cout << "Initial value x0\n" << x_eigen.transpose() << std::endl;
+    timer.tic();
+    grad_descent<Eigen::VectorXd>(f_eigen,df_eigen,ftol,xtol,learn_rate,x_eigen);
+    cout << "Optim took " << timer.toc() * 1000 << " ms.\n";
+    cout << "Final value xf\n" << x_eigen.transpose() << std::endl;
+
+    raw_vector x_arma_vec = arma::conv_to<raw_vector>::from(x_arma);
+    raw_vector x_eigen_vec(DIM);
+    for (int i = 0; i < DIM; i++)
+        x_eigen_vec[i] = x_eigen(i);
+
+    cout << "Checking for equality between vectors...\n";
+    require(x.compare(x_arma_vec,1e-4),"VECTORS ARE NOT EQUAL!");
+    require(x.compare(x_eigen_vec,1e-4),"VECTORS ARE NOT EQUAL!");
 
 }
 
@@ -105,7 +170,7 @@ void check_accuracy_mat_vec_mult() {
     cout << out_arma;
     out.print("out");*/
 
-    require(out.compare(out_arma_vec,1e-4),"MATRICES ARE NOT EQUAL!");
+    require(out.compare(out_arma_vec,1e-4),"VECTORS ARE NOT EQUAL!");
 
 }
 
