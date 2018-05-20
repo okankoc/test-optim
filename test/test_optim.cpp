@@ -18,6 +18,7 @@ void require(const bool cond, const std::string & message);
 void compare_speed_mat_vec_mult();
 void check_accuracy_mat_vec_mult();
 void test_grad_descent();
+void compare_line_search_with_learn_rate();
 
 int main() {
 
@@ -26,6 +27,7 @@ int main() {
     compare_speed_mat_vec_mult();
     check_accuracy_mat_vec_mult();
     test_grad_descent();
+    compare_line_search_with_learn_rate();
 
     return 0;
 }
@@ -40,6 +42,42 @@ double cost_fnc(const vec & x) {
 template<typename vec>
 vec grad_fnc(const vec & x) {
     return x*2.0;
+}
+
+void compare_line_search_with_learn_rate() {
+
+    using namespace opt;
+    using std::cout;
+    const int DIM = 100;
+    const double ftol = 1e-10;
+    const double xtol = 1e-10;
+    cout << "\n Comparing line search to fixed learning rate...\n";
+
+    cout << "Grad descent with line search...\n";
+    f_optim<Vector> f = cost_fnc<Vector>;
+    df_optim<Vector> df = grad_fnc<Vector>;
+
+    Vector x1(DIM);
+    x1.randn();
+    //x1.print("Initial value x0");
+    arma::wall_clock timer;
+    timer.tic();
+    Vector x_init = x1;
+    grad_descent<Vector>(f,df,ftol,xtol,x1);
+    cout << "Optim took " << timer.toc() * 1000 << " ms.\n";
+    //x1.print("Final value xf");
+
+    cout << "Grad descent with fixed learn rate 0.1 ...\n";
+    Vector x2(DIM);
+    x2 = x_init;
+    //x2.print("Initial value x0");
+    timer.tic();
+    const double learn_rate = 0.1;
+    grad_descent<Vector>(f,df,ftol,xtol,learn_rate,x2);
+    cout << "Optim took " << timer.toc() * 1000 << " ms.\n";
+    //x2.print("Final value xf");
+
+    require(f(x1) < f(x2), "FIXED LEARN RATE PERFORMS BETTER!");
 }
 
 void test_grad_descent() {

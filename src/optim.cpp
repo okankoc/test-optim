@@ -52,7 +52,7 @@ void grad_descent(const f_optim<vec> & f,
     vec x_diff = x;
     while (f_diff > ftol || norm_diff > xtol) {
         direction = -df(x);
-        learn_rate = line_search(f,df,direction,x,0.5,10^-4);
+        learn_rate = line_search(f,df,direction,x,0.5,0.0001);
         x += direction * learn_rate;
         f_diff = fabs(f(x) - f(x_pre));
         x_diff = x - x_pre;
@@ -76,7 +76,7 @@ double line_search(const f_optim<vec> & f,
     while (val > val_pre + c*vdot(grad,direction)) {
         alpha *= rho;
         x_search = x + (direction*alpha);
-        val = f(x);
+        val = f(x_search);
     }
     return alpha;
 }

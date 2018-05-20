@@ -17,7 +17,7 @@ my own Vector and Matrix classes.
 Using: cmake, C++11
 Testing against: armadillo, Eigen
 
-** TODO Reading sources
+** IN-PROGRESS Reading sources
 *** IN-PROGRESS Read C++ tips by Herbert Simon
 *** TODO Look into Numerical Recipes for efficiency
 *** TODO Read proof of Gradient Descent convergence with Line Search
@@ -52,7 +52,7 @@ to the ARMADILLO result. Seeding both ARMA and OWN
 matrices and vectors with C++11 random number generator
 and seed.
 
-** IN-PROGRESS Test gradient descent for an arbitrary function
+** DONE Test gradient descent for an arbitrary function
 *** DONE Use a learning rate
 Added a learning rate, xtol and ftol termination
 criteria. I had to also introduce -=, +=, *, and norm
@@ -70,13 +70,23 @@ Added a unit test for optimizing f(x) = x'*x in ten dimensions.
 I had to again introduce three different specializations
 for the cost function and its gradient.
 
-*** TODO Add line search
-** TODO Test Newton's method with line search
+*** DONE Add line search
+Added templates for gradient descent with line search
+and with fixed learning rate.
+
+I had to additionally introduce vdot and vnorm(.) template
+functions that are specialized to Vector, arma::vec and
+Eigen::VectorXd vectors inside implemenation files 
+(i.e. optim_impl_xx.cpp)
+
+*** TODO Test with various test functions
+** TODO Test Newton's method
 *** TODO Compute Hessian matrix
-*** TODO Add matrix inversion
+*** TODO Add matrix inversioen
 **** TODO Compare speed of matrix inversion Eigen/Arma
 **** TODO Test accuracy of matrix inversion
-** TODO Add trust region method (Nocedal et al.)
+*** TODO Test with line search
+*** TODO Add trust region method (Nocedal et al.)
 ** TODO Add Quasi-Newton method (BFGS)
 ** TODO Check other libraries
 *** TODO Extend vector & matrix computations with BLAS/LAPACK
