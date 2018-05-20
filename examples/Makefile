@@ -4,11 +4,11 @@ LIBS=-larmadillo
 INCLUDE=-I./ -isystem/usr/local/include/eigen3
 
 all:
-	$(CC) $(FLAGS) test_optim.cpp optim.cpp matrix.cpp \
-	$(LIBS) $(INCLUDE) -o optim
+	$(CC) $(FLAGS) test_template.cpp ex_template.cpp \
+	$(LIBS) $(INCLUDE) -o template
 
 clean:
-	rm -rf ./optim
+	rm -rf ./add
 	
 .PHONY: all release debug test install
 

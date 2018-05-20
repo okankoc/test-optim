@@ -34,10 +34,6 @@ void Vector::randn() {
     }
 }
 
-double Vector::operator*(const Vector & vec_two) const {
-    return inner_prod(vec_two);
-}
-
 double Vector::operator[](const int idx) const {
     return vec[idx];
 }
@@ -53,10 +49,24 @@ Vector Vector::operator*(const double & val) const {
     return out;
 }
 
+Vector Vector::operator+(const Vector & vec_two) const {
+    Vector out(*this);
+    for (int i = 0; i < m; i++)
+        out.vec[i] += vec_two.vec[i];
+    return out;
+}
+
 Vector Vector::operator+(const double & val) const {
     Vector out(*this);
     for (int i = 0; i < m; i++)
         out.vec[i] += val;
+    return out;
+}
+
+Vector Vector::operator-() const {
+    Vector out(*this);
+    for (int i = 0; i < m; i++)
+        out.vec[i] *= -1;
     return out;
 }
 
@@ -201,7 +211,8 @@ void Matrix::randn() {
 }
 
 Vector Matrix::operator*(const Vector & in) const {
-    Vector out(m);
+
+    Vector out(in);
     mult_vec(in,out);
     return out;
 }
@@ -214,7 +225,11 @@ void Matrix::mult_vec(const Vector & in, Vector & out) const {
 }
 
 double norm(const Vector & vec) {
-    return sqrt(vec*vec);
+    return sqrt(dot(vec,vec));
+}
+
+double dot(const Vector & vec_one, const Vector & vec_two) {
+    return vec_one.inner_prod(vec_two);
 }
 
 }

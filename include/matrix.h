@@ -25,7 +25,6 @@ private:
     int m; //!< number of elements
     raw_vector vec;
     std::default_random_engine engine = std::default_random_engine();
-    double inner_prod(const Vector & v) const;
     void print() const;
 
 public:
@@ -36,13 +35,15 @@ public:
     void randu();
     void randn();
     bool compare(const raw_vector & vec_, const double & max_diff) const;
-    double inner_prod(const raw_vector & vec_two) const;
+    double inner_prod(const std::vector<double> & vec_two) const;
+    double inner_prod(const Vector & v) const;
+    Vector operator-() const;
     double operator[](const int idx) const;
     double& operator[](const int idx);
-    double operator*(const Vector & vec_two) const;
     Vector operator*(const double & val) const;
     Vector operator-(const Vector & vec_two) const;
     Vector operator-(const double & val) const;
+    Vector operator+(const Vector & vec_two) const;
     Vector operator+(const double & val) const;
     Vector & operator+=(const double & val);
     Vector & operator+=(const Vector & vec_two);
@@ -70,7 +71,9 @@ public:
     Vector operator*(const Vector & in) const;
 };
 
+// norm and dot product of vectors
 double norm(const Vector & vec);
+double dot(const Vector & vec_one, const Vector & vec_two);
 
 }
 

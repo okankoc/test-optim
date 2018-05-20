@@ -11,17 +11,18 @@
 "What I cannot create, I do not understand." - Feynman
 
 The goal is to test my own implementations of gradient descent
-and Quasi-Newton methods.
+and Quasi-Newton methods. In the process I also created
+my own Vector and Matrix classes.
 
-Using: make, C++11
+Using: cmake, C++11
+Testing against: armadillo, Eigen
 
 ** TODO Reading sources
-*** TODO Read C++ tips by Herbert Simon
+*** IN-PROGRESS Read C++ tips by Herbert Simon
 *** TODO Look into Numerical Recipes for efficiency
 *** TODO Read proof of Gradient Descent convergence with Line Search
 *** TODO Read Newton's Method convergence proof
 *** TODO Read QN convergence proof
-
 ** DONE Implement linear algebra library
 *** DONE Implement vector and matrix types
 Including typedefs for the vector matrix types

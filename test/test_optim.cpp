@@ -30,56 +30,40 @@ int main() {
     return 0;
 }
 
+
 // cost and grad function templates
-template<typename T>
-double cost_fnc(const T & x);
-
-template<typename T>
-T grad_fnc(const T & x);
-
-// specializations for cost and grad functions
-template<> double cost_fnc<opt::Vector>(const opt::Vector & x) {
-    return x*x; // inner product
+template<typename vec>
+double cost_fnc(const vec & x) {
+    return opt::vdot(x,x);
 }
 
-template<> double cost_fnc<arma::vec>(const arma::vec & x) {
-    return dot(x,x);
-}
-
-template<> double cost_fnc<Eigen::VectorXd>(const Eigen::VectorXd & x) {
-    return x.dot(x);
-}
-
-template<> opt::Vector grad_fnc<opt::Vector>(const opt::Vector & x) {
-    return x*2; //x-derivative
-}
-
-template<> arma::vec grad_fnc<arma::vec>(const arma::vec & x) {
-    return x*2; //x-derivative
-}
-
-template<> Eigen::VectorXd grad_fnc<Eigen::VectorXd>(const Eigen::VectorXd & x) {
-    return x*2; //x-derivative
+template<typename vec>
+vec grad_fnc(const vec & x) {
+    return x*2.0;
 }
 
 void test_grad_descent() {
+
     using namespace opt;
     using std::cout;
+
     const int DIM = 10;
+    const double ftol = 1e-10;
+    const double xtol = 1e-10;
+    //const double learn_rate = 0.1;
 
     cout << "\nTesting gradient descent...\n";
     f_optim<Vector> f = cost_fnc<Vector>;
     df_optim<Vector> df = grad_fnc<Vector>;
-    const double ftol = 1e-10;
-    const double xtol = 1e-10;
-    const double learn_rate = 0.1;
+
     Vector x(DIM);
     x.randn();
     x.print("Initial value x0");
     arma::wall_clock timer;
     timer.tic();
     Vector x_init = x;
-    grad_descent<Vector>(f,df,ftol,xtol,learn_rate,x);
+    //grad_descent<Vector>(f,df,ftol,xtol,learn_rate,x);
+    grad_descent<Vector>(f,df,ftol,xtol,x);
     cout << "Optim took " << timer.toc() * 1000 << " ms.\n";
     x.print("Final value xf");
 
@@ -93,7 +77,8 @@ void test_grad_descent() {
 
     //x_arma.t().print("Initial value x0");
     timer.tic();
-    grad_descent<arma::vec>(f_arma,df_arma,ftol,xtol,learn_rate,x_arma);
+    //grad_descent<arma::vec>(f_arma,df_arma,ftol,xtol,learn_rate,x_arma);
+    grad_descent<arma::vec>(f_arma,df_arma,ftol,xtol,x_arma);
     cout << "Optim took " << timer.toc() * 1000 << " ms.\n";
     x_arma.t().print("Final value xf");
 
@@ -106,7 +91,8 @@ void test_grad_descent() {
         x_eigen(i) = x_init[i];
     //cout << "Initial value x0\n" << x_eigen.transpose() << std::endl;
     timer.tic();
-    grad_descent<Eigen::VectorXd>(f_eigen,df_eigen,ftol,xtol,learn_rate,x_eigen);
+    //grad_descent<Eigen::VectorXd>(f_eigen,df_eigen,ftol,xtol,learn_rate,x_eigen);
+    grad_descent<Eigen::VectorXd>(f_eigen,df_eigen,ftol,xtol,x_eigen);
     cout << "Optim took " << timer.toc() * 1000 << " ms.\n";
     cout << "Final value xf\n" << x_eigen.transpose() << std::endl;
 
