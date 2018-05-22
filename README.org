@@ -15,15 +15,35 @@ and Quasi-Newton methods. In the process I also created
 my own Vector and Matrix classes.
 
 Using: cmake, C++11
-Testing against: armadillo, Eigen
+Testing with: armadillo, Eigen
 
 ** IN-PROGRESS Reading sources
 *** IN-PROGRESS Read C++ tips by Herbert Simon
 *** TODO Look into Numerical Recipes for efficiency
-*** TODO Read proof of Gradient Descent convergence with Line Search
-*** TODO Read Newton's Method convergence proof
-*** TODO Read QN convergence proof
-** DONE Implement linear algebra library
+**** TODO Look into decompositions
+LU, Cholesky, QR, Eigendecomposition and SVD in particular
+**** TODO Look into optimization code
+*** DONE Read proof of Gradient Descent convergence with Line Search
+The key element in the proof is to bound 
+\sum_k cos(\theta_k)^2 \|\grad f_k\|^2
+
+The term appearing in the linear rate of convergence 
+depends on the minimum and maximum eigenvalues of the curvature. 
+
+*** DONE Read Newton's Method convergence proof
+The Newton's method has a local convergence proof, which
+depends on the curvature being lipschitz continuous 
+(as a result the function f if C^2)
+
+The global convergence is ONLY achieved if the local
+convergence holds and from a far away starting point
+the descent directions can be guaranteed with a 
+modified matrix factorization approach.
+*** DONE Read QN local convergence proof
+The QN local convergence relies on the fact that the curvature 
+on the QN descent directions p_k are small o(p_k).
+*** TODO Read QN global convergence proof
+** IN-PROGRESS Implement linear algebra library
 *** DONE Implement vector and matrix types
 Including typedefs for the vector matrix types
 *** DONE Allocate/deallocate vectors and matrices
@@ -52,6 +72,9 @@ to the ARMADILLO result. Seeding both ARMA and OWN
 matrices and vectors with C++11 random number generator
 and seed.
 
+*** TODO Add matrix inversion
+**** TODO Compare speed of matrix inversion Eigen/Arma
+**** TODO Test accuracy of matrix inversion
 ** DONE Test gradient descent for an arbitrary function
 *** DONE Use a learning rate
 Added a learning rate, xtol and ftol termination
@@ -87,9 +110,6 @@ a vector of such structures for gradient descent.
 
 ** TODO Test Newton's method
 *** TODO Compute Hessian matrix
-*** TODO Add matrix inversioen
-**** TODO Compare speed of matrix inversion Eigen/Arma
-**** TODO Test accuracy of matrix inversion
 *** TODO Test with line search
 *** TODO Add trust region method (Nocedal et al.)
 ** TODO Add Quasi-Newton method (BFGS)
