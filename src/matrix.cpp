@@ -232,4 +232,8 @@ double dot(const Vector & vec_one, const Vector & vec_two) {
     return vec_one.inner_prod(vec_two);
 }
 
+Vector solve(const Matrix & mat, const Vector & vec) {
+    // TODO:
+}
+
 }

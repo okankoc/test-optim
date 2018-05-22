@@ -61,6 +61,33 @@ void grad_descent(const f_optim<vec> & f,
     }
 }
 
+template<typename vec, typename mat>
+void newtons_method(const f_optim<vec> & f,
+                    const df_optim<vec> & df,
+                    const ddf_optim<vec,mat> & ddf,
+                    const double & ftol,
+                    const double & xtol,
+                    vec & x) {
+
+    vec x_pre = x;
+    double f_diff = 100;
+    double norm_diff = 100;
+    double learn_rate = 1;
+    vec direction = -df(x);
+    vec x_diff = x;
+    mat hessian;
+    while (f_diff > ftol || norm_diff > xtol) {
+        hessian = ddf(x);
+        direction = inv(hessian,-df(x));
+        learn_rate = line_search(f,df,direction,x,0.5,0.0001);
+        x += direction * learn_rate;
+        f_diff = fabs(f(x) - f(x_pre));
+        x_diff = x - x_pre;
+        norm_diff = vnorm(x_diff);
+        x_pre = x;
+    }
+}
+
 template<typename vec>
 double line_search(const f_optim<vec> & f,
                    const df_optim<vec> & df,

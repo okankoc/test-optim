@@ -17,6 +17,17 @@ using f_optim = double (*)(const vec & x);
 template<typename vec>
 using df_optim = vec (*)(const vec & x);
 
+template<typename vec, typename mat>
+using ddf_optim = mat (*)(const vec & x);
+
+template<typename vec, typename mat>
+void newtons_method(const f_optim<vec> & f,
+                    const df_optim<vec> & df,
+                    const ddf_optim<vec,mat> & ddf,
+                    const double & ftol,
+                    const double & xtol,
+                    vec & x);
+
 /**
  * Gradient descent with fixed learning rate
  */

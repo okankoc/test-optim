@@ -74,6 +74,7 @@ public:
 // norm and dot product of vectors
 double norm(const Vector & vec);
 double dot(const Vector & vec_one, const Vector & vec_two);
+Vector solve(const Matrix & mat, const Vector & vec);
 
 }
 

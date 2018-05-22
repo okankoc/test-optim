@@ -79,7 +79,12 @@ functions that are specialized to Vector, arma::vec and
 Eigen::VectorXd vectors inside implemenation files 
 (i.e. optim_impl_xx.cpp)
 
-*** TODO Test with various test functions
+*** DONE Test with various test functions
+After failing attempts to introduce a concise way
+to template multiple test functions (with gradients)
+I now wrap them around a structure and introduce
+a vector of such structures for gradient descent.
+
 ** TODO Test Newton's method
 *** TODO Compute Hessian matrix
 *** TODO Add matrix inversioen
@@ -88,6 +93,11 @@ Eigen::VectorXd vectors inside implemenation files
 *** TODO Test with line search
 *** TODO Add trust region method (Nocedal et al.)
 ** TODO Add Quasi-Newton method (BFGS)
+** TODO Add extensive test functions and evaluations
+I can first check NLOPT to see what functions they are 
+testing for unconstrained optim.
+*** TODO Check internet for unconstr. optim examples
+*** TODO Report termination info
 ** TODO Check other libraries
 *** TODO Extend vector & matrix computations with BLAS/LAPACK
 *** TODO Compare with Eigen unsupported module (MINPACK in C++)

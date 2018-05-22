@@ -11,6 +11,7 @@
 
 #include "matrix.h"
 #include "optim.h"
+#include "test_functions.h"
 
 namespace opt = unconstr_optim;
 
@@ -19,6 +20,7 @@ void compare_speed_mat_vec_mult();
 void check_accuracy_mat_vec_mult();
 void test_grad_descent();
 void compare_line_search_with_learn_rate();
+void test_grad_descent_multiple_fncs();
 
 int main() {
 
@@ -28,20 +30,27 @@ int main() {
     check_accuracy_mat_vec_mult();
     test_grad_descent();
     compare_line_search_with_learn_rate();
+    test_grad_descent_multiple_fncs();
 
     return 0;
 }
 
+void test_grad_descent_multiple_fncs() {
 
-// cost and grad function templates
-template<typename vec>
-double cost_fnc(const vec & x) {
-    return opt::vdot(x,x);
-}
-
-template<typename vec>
-vec grad_fnc(const vec & x) {
-    return x*2.0;
+    using std::cout;
+    using namespace opt;
+    cout << "\n\tTesting grad descent on multiple test functions\n";
+    std::vector<test_fnc_info<Vector>> test_funcs = init_test_fnc<Vector>();
+    const double ftol = 1e-10;
+    const double xtol = 1e-10;
+    const int DIM = 10;
+    Vector x(DIM);
+    for(unsigned i = 0; i < test_funcs.size(); i++) {
+        x.randn();
+        std::cout << "Starting test " << i << " from random x0...\n";
+        grad_descent<Vector>(test_funcs[i].f,test_funcs[i].df,ftol,xtol,x);
+        x.print("Final value xf");
+    }
 }
 
 void compare_line_search_with_learn_rate() {
@@ -51,11 +60,11 @@ void compare_line_search_with_learn_rate() {
     const int DIM = 100;
     const double ftol = 1e-10;
     const double xtol = 1e-10;
-    cout << "\n Comparing line search to fixed learning rate...\n";
+    cout << "\n\tComparing line search to fixed learning rate...\n";
 
     cout << "Grad descent with line search...\n";
-    f_optim<Vector> f = cost_fnc<Vector>;
-    df_optim<Vector> df = grad_fnc<Vector>;
+    f_optim<Vector> f = f1<Vector>;
+    df_optim<Vector> df = df1<Vector>;
 
     Vector x1(DIM);
     x1.randn();
@@ -90,9 +99,9 @@ void test_grad_descent() {
     const double xtol = 1e-10;
     //const double learn_rate = 0.1;
 
-    cout << "\nTesting gradient descent...\n";
-    f_optim<Vector> f = cost_fnc<Vector>;
-    df_optim<Vector> df = grad_fnc<Vector>;
+    cout << "\n\tTesting gradient descent...\n";
+    f_optim<Vector> f = f1<Vector>;
+    df_optim<Vector> df = df1<Vector>;
 
     Vector x(DIM);
     x.randn();
@@ -106,8 +115,8 @@ void test_grad_descent() {
     x.print("Final value xf");
 
     cout << "Testing gradient descent with ARMADILLO...\n";
-    f_optim<arma::vec> f_arma = cost_fnc<arma::vec>;
-    df_optim<arma::vec> df_arma = grad_fnc<arma::vec>;
+    f_optim<arma::vec> f_arma = f1<arma::vec>;
+    df_optim<arma::vec> df_arma = df1<arma::vec>;
     arma::vec x_arma = arma::zeros<arma::vec>(DIM);
     //x_arma.randn();
     for (int i = 0; i < DIM; i++)
@@ -121,8 +130,8 @@ void test_grad_descent() {
     x_arma.t().print("Final value xf");
 
     cout << "Testing gradient descent with EIGEN...\n";
-    f_optim<Eigen::VectorXd> f_eigen = cost_fnc<Eigen::VectorXd>;
-    df_optim<Eigen::VectorXd> df_eigen = grad_fnc<Eigen::VectorXd>;
+    f_optim<Eigen::VectorXd> f_eigen = f1<Eigen::VectorXd>;
+    df_optim<Eigen::VectorXd> df_eigen = df1<Eigen::VectorXd>;
     Eigen::VectorXd x_eigen = Eigen::VectorXd::Zero(DIM);
     //x_eigen.setRandom();
     for (int i = 0; i < DIM; i++)
@@ -155,7 +164,7 @@ void require(const bool cond, const std::string & message) {
 void check_accuracy_mat_vec_mult() {
     using std::cout;
     using namespace unconstr_optim;
-    cout << "\nChecking accuracy of multiplication...\n";
+    cout << "\n\tChecking accuracy of multiplication...\n";
     cout << "Multiplying OWN matrix and vector...\n";
     int m = 100;
     int n = 100;
@@ -202,7 +211,7 @@ void compare_speed_mat_vec_mult() {
 
     using std::cout;
     using namespace unconstr_optim;
-    cout << "\nComparing speed of matrix-vector multiplication...\n";
+    cout << "\n\tComparing speed of matrix-vector multiplication...\n";
     cout << "Multiplying OWN matrix and vector...\n";
     int m = 1000;
     int n = 1000;
